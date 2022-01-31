@@ -35,6 +35,24 @@ function validate(nameValue, urlValue) {
     return true;
 }
 
+// Fetch bookmarks:
+function fetchBookmarks() {
+    // Get bookmarks from localStorage if available:
+    if (localStorage.getItem('bookmarks')) {
+        bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+    } else {
+        // Create bookmarks array in localStorage
+        bookmarks = [
+            {
+                name: 'Example',
+                url: 'https://example.com',
+            },
+        ];
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    }
+    console.log(bookmarks);
+}
+
 // Handle data from form:
 function storeBookmark(event) {
     // preventDefault method ensures that while this is a static webpage (no back-end component), the default behaviour for an HTML form (sending request to server) is *not* triggered:
@@ -52,10 +70,14 @@ function storeBookmark(event) {
         url: urlValue,
     };
     bookmarks.push(bookmark);
-    console.log(bookmarks);
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    fetchBookmarks();
     bookmarkForm.reset();
     websiteNameEl.focus();
 }
 
 // Event listener:
 bookmarkForm.addEventListener('submit', storeBookmark);
+
+// On load, fetch bookmarks:
+fetchBookmarks();
